@@ -36,7 +36,10 @@ class_name Struct
 @export_storage var type_index:={}
 
 func _init() -> void:
-	fields = "resolution: 1920, 1080\ninv_resolution: 0.00052,0.000926\ndelta_time: 0.016666\nscale: 1.0"
+	fields = "vec2 resolution = vec2(1920, 1080)
+vec2 inv_resolution = vec2(0.00052,0.000926)
+float delta_time= 0.016666
+float scale= 1.0"
 
 # ==================== 公共接口 ==================== #
 ## 根据data生成GLSL结构体定义

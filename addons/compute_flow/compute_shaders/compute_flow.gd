@@ -44,7 +44,7 @@ var has_dup_uniforms:=false
 func _ready() -> void:
 	if !black_board:
 		black_board = ComputeFlowBlackBoard.new()
-		var folder_path = "res://addons/compute_shader/data/black_board_data/"
+		var folder_path = "res://addons/compute_flow/data/black_board_data/"
 		black_board.resource_path = folder_path + str(ResourceUID.create_id())+ ".tres"
 		ResourceSaver.save(black_board, folder_path)
 	if Engine.is_editor_hint():
