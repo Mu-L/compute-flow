@@ -7,6 +7,7 @@ class_name ComputeUniform
 
 ## 完成设置,rd_uniform 发生变化
 signal rd_change() 
+@export var debug:= false
 
 ## 根据 GLSL 语言规范，标识符必须由字母、数字和下划线组成，且首字符不能是数字
 @export var uniform_name: String = "uniform":
@@ -50,6 +51,7 @@ func _ready() -> void:
 		return
 	await get_rd_uniform()
 	print("%s ready"% uniform_name , rid)
+
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings:PackedStringArray = []
 	

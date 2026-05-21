@@ -13,6 +13,40 @@ const TYPE_SIZES := {
 	TYPE_STRING: -1,  # 动态大小
 }
 
+## 数据类型转换
+static func get_type(value: Variant) -> int:
+	match typeof(value):
+		TYPE_VECTOR3:
+			return TYPE_VECTOR4      
+		TYPE_VECTOR3I:
+			return TYPE_VECTOR4I    
+		TYPE_COLOR:
+			return TYPE_VECTOR4     
+		TYPE_RECT2:
+			return TYPE_VECTOR4  
+		TYPE_RECT2I:
+			return TYPE_VECTOR4I  
+		TYPE_PLANE:
+			return TYPE_VECTOR4   
+			
+		# ========== 矩阵系列：直接转换为标准列向量大小 ==========
+		TYPE_BASIS:
+			return TYPE_BASIS      
+		TYPE_TRANSFORM3D:
+			return TYPE_TRANSFORM3D  # 保持原本，对应 mat4 (共 64 字节)
+		TYPE_PROJECTION:
+			return TYPE_PROJECTION   # 保持原本，对应 mat4 (共 64 字节)
+
+		# ========== 基础标量与 2D 向量：直接输出原本类型 ==========
+		TYPE_BOOL, TYPE_INT, TYPE_FLOAT, \
+		TYPE_VECTOR2, TYPE_VECTOR2I, TYPE_VECTOR4, TYPE_VECTOR4I:
+			return typeof(value)     # 基础 4 字节和 8 字节类型，不需要额外对齐转换
+
+		# ========== 安全防御 ==========
+		_:
+			push_warning("未处理的类型转换: ", typeof(value))
+			return typeof(value)
+
 #  <==============================方法1 将字段转换成字典==============================>
 ## 从编辑器文本生成数据字典
 ## field:编辑器数据文本  auto_alignment: 是否自动排序[br]
@@ -333,6 +367,7 @@ static func get_type_name(value: Variant) -> String:
 		_:
 			printerr("不支持的数据类型")
 			return str(value)
+
 #  <==============================方法3 生成字段索引==============================>
 ## 从data字典生成 [0]字段索引字典 [1]数据总长度 [2]数据类型字典[br] 
 ## layout: 0=push_constant ,1= std140, 2=storage_buffer/std430
@@ -370,7 +405,6 @@ static func generate_field_index(field_data: Dictionary,data_list:Array, layout 
 ## 辅助方法：获取数据的对齐要求
 static func _get_type_alignments(value) -> int:
 	var value_type = typeof(value)
-	
 	match value_type:
 		TYPE_BOOL, TYPE_INT, TYPE_FLOAT:
 			return 4
@@ -390,6 +424,8 @@ static func _get_type_alignments(value) -> int:
 ## 获取任意值的原始字节数据
 static func get_value_bytes(value: Variant) -> PackedByteArray:
 	var value_type = typeof(value)
+	
+	
 	match value_type:
 		TYPE_INT:
 			return PackedInt32Array([value]).to_byte_array()  # 4字节
@@ -410,12 +446,22 @@ static func get_value_bytes(value: Variant) -> PackedByteArray:
 		TYPE_VECTOR3I:
 			var vec = value as Vector3i
 			return PackedInt32Array([vec.x, vec.y, vec.z]).to_byte_array()  # 12字节
+		TYPE_RECT2I:
+			var vec = value
+			return PackedInt32Array([vec.position.x, vec.position.y, vec.size.x, vec.size.y]).to_byte_array()
+		TYPE_RECT2:
+			var vec = value
+			return PackedFloat32Array([vec.position.x, vec.position.y, vec.size.x, vec.size.y]).to_byte_array()
+			
+		TYPE_VECTOR4I:
+			var vec = value
+			return PackedInt32Array([vec.x, vec.y, vec.z, vec.w]).to_byte_array()  
 		TYPE_VECTOR4:
 			var vec = value
-			return PackedFloat32Array([vec.x, vec.y, vec.z, vec.w]).to_byte_array()  # 16字节
+			return PackedFloat32Array([vec.x, vec.y, vec.z, vec.w]).to_byte_array()  
 		TYPE_COLOR:
 			var color = value as Color
-			return PackedFloat32Array([color.r, color.g, color.b, color.a]).to_byte_array()  # 16字节
+			return PackedFloat32Array([color.r, color.g, color.b, color.a]).to_byte_array()  
 		TYPE_TRANSFORM3D:
 			var transform = value as Transform3D
 			var basis = transform.basis
@@ -430,31 +476,8 @@ static func get_value_bytes(value: Variant) -> PackedByteArray:
 		_:
 			push_error("不支持的字段类型: ", value_type)
 			return PackedByteArray()
+
 ## 解析字节为原始数据
-#static func parse_value_bytes(data: PackedByteArray, offset: int, size: int):
-	#match size:
-		#4:  # float
-			#return data.decode_float(offset)
-		#8:  # vec2
-			#return Vector2(
-				#data.decode_float(offset),
-				#data.decode_float(offset + 4)
-			#)
-		#12: # vec3 + 4字节填充
-			#return Vector3(
-				#data.decode_float(offset),
-				#data.decode_float(offset + 4),
-				#data.decode_float(offset + 8)
-			#)
-		#16: # vec4
-			#return Vector4(
-				#data.decode_float(offset),
-				#data.decode_float(offset + 4),
-				#data.decode_float(offset + 8),
-				#data.decode_float(offset + 12)
-			#)
-		#_:  # 其他情况返回字节数组
-			#return data.slice(offset, offset + size)
 static func parse_value_bytes(data: PackedByteArray, type_index: Dictionary, data_list: Array) -> Dictionary:
 	var result := {}
 	
@@ -462,67 +485,129 @@ static func parse_value_bytes(data: PackedByteArray, type_index: Dictionary, dat
 		push_error("字节数据或字段列表为空")
 		return result
 	
-	# 当前偏移位置
 	var current_offset := 0
+	var data_size := data.size()
 	
-	# 遍历字段顺序列表
-	for i in range(data_list.size()):
-		var field_name: String = data_list[i]
+	for field_name in data_list:
+		if current_offset >= data_size:
+			push_warning("数据字节流已提前结束，无法解析字段: ", field_name)
+			break
+			
+		var field_type: int = type_index.get(field_name, TYPE_FLOAT)
 		
-		# 获取字段类型
-		var field_type = type_index.get(field_name, 3)  # 默认float
+		var size: int = TYPE_SIZES.get(field_type, 4)
 		
-		# 根据类型解析
 		match field_type:
-			1:  # bool
+			TYPE_BOOL:
 				result[field_name] = data.decode_s32(current_offset) != 0
-				current_offset += 4
-			2:  # int
+				
+			TYPE_INT:
 				result[field_name] = data.decode_s32(current_offset)
-				current_offset += 4
-			3:  # float
+				
+			TYPE_FLOAT:
 				result[field_name] = data.decode_float(current_offset)
-				current_offset += 4
-			4:  # uint
-				result[field_name] = data.decode_u32(current_offset)
-				current_offset += 4
-			5:  # vec2
+				
+			TYPE_VECTOR2:
 				result[field_name] = Vector2(
 					data.decode_float(current_offset),
 					data.decode_float(current_offset + 4)
 				)
-				current_offset += 8
-			6:  # vec2i
+				
+			TYPE_VECTOR2I:
 				result[field_name] = Vector2i(
 					data.decode_s32(current_offset),
 					data.decode_s32(current_offset + 4)
 				)
-				current_offset += 8
-			7:  # vec3
+				
+			TYPE_VECTOR3:
 				result[field_name] = Vector3(
 					data.decode_float(current_offset),
 					data.decode_float(current_offset + 4),
 					data.decode_float(current_offset + 8)
 				)
-				current_offset += 12
-			8:  # vec4
+				
+			TYPE_VECTOR3I:
+				result[field_name] = Vector3i(
+					data.decode_s32(current_offset),
+					data.decode_s32(current_offset + 4),
+					data.decode_s32(current_offset + 8)
+				)
+				
+			TYPE_VECTOR4:
 				result[field_name] = Vector4(
 					data.decode_float(current_offset),
 					data.decode_float(current_offset + 4),
 					data.decode_float(current_offset + 8),
 					data.decode_float(current_offset + 12)
 				)
-				current_offset += 16
-			9:  # vec3_padded (vec3 + 4字节填充)
-				result[field_name] = Vector3(
+				
+			TYPE_VECTOR4I:
+				result[field_name] = [
+					data.decode_s32(current_offset),
+					data.decode_s32(current_offset + 4),
+					data.decode_s32(current_offset + 8),
+					data.decode_s32(current_offset + 12)
+				]
+				
+			TYPE_COLOR:
+				result[field_name] = Color(
 					data.decode_float(current_offset),
 					data.decode_float(current_offset + 4),
-					data.decode_float(current_offset + 8)
+					data.decode_float(current_offset + 8),
+					data.decode_float(current_offset + 12)
 				)
-				current_offset += 16  # vec3(12) + 填充(4)
+				
+			TYPE_RECT2:
+				result[field_name] = Rect2(
+					data.decode_float(current_offset),
+					data.decode_float(current_offset + 4),
+					data.decode_float(current_offset + 8),
+					data.decode_float(current_offset + 12)
+				)
+				
+			TYPE_RECT2I:
+				result[field_name] = Rect2i(
+					data.decode_s32(current_offset),
+					data.decode_s32(current_offset + 4),
+					data.decode_s32(current_offset + 8),
+					data.decode_s32(current_offset + 12)
+				)
+				
+			TYPE_TRANSFORM2D:
+				var origin = Vector2(data.decode_float(current_offset), data.decode_float(current_offset + 4))
+				var x_axis = Vector2(data.decode_float(current_offset + 16), data.decode_float(current_offset + 20))
+				var y_axis = Vector2(data.decode_float(current_offset + 32), data.decode_float(current_offset + 36))
+				result[field_name] = Transform2D(x_axis, y_axis, origin)
+
+			TYPE_BASIS:
+				var rows_or_cols = [
+					Vector3(data.decode_float(current_offset), data.decode_float(current_offset + 4), data.decode_float(current_offset + 8)),
+					Vector3(data.decode_float(current_offset + 16), data.decode_float(current_offset + 20), data.decode_float(current_offset + 24)),
+					Vector3(data.decode_float(current_offset + 32), data.decode_float(current_offset + 36), data.decode_float(current_offset + 40))
+				]
+				result[field_name] = Basis(rows_or_cols[0], rows_or_cols[1], rows_or_cols[2])
+
+			TYPE_TRANSFORM3D:
+				var b_x = Vector3(data.decode_float(current_offset), data.decode_float(current_offset + 4), data.decode_float(current_offset + 8))
+				var b_y = Vector3(data.decode_float(current_offset + 16), data.decode_float(current_offset + 20), data.decode_float(current_offset + 24))
+				var b_z = Vector3(data.decode_float(current_offset + 32), data.decode_float(current_offset + 36), data.decode_float(current_offset + 40))
+				var origin = Vector3(data.decode_float(current_offset + 48), data.decode_float(current_offset + 52), data.decode_float(current_offset + 56))
+				result[field_name] = Transform3D(Basis(b_x, b_y, b_z), origin)
+				
+			TYPE_PROJECTION:
+				var c0 = Vector4(data.decode_float(current_offset), data.decode_float(current_offset + 4), data.decode_float(current_offset + 8), data.decode_float(current_offset + 12))
+				var c1 = Vector4(data.decode_float(current_offset + 16), data.decode_float(current_offset + 20), data.decode_float(current_offset + 24), data.decode_float(current_offset + 28))
+				var c2 = Vector4(data.decode_float(current_offset + 32), data.decode_float(current_offset + 36), data.decode_float(current_offset + 40), data.decode_float(current_offset + 44))
+				var c3 = Vector4(data.decode_float(current_offset + 48), data.decode_float(current_offset + 52), data.decode_float(current_offset + 56), data.decode_float(current_offset + 60))
+				result[field_name] = Projection(c0, c1, c2, c3)
+
 			_:
-				# 默认按float处理
-				result[field_name] = data.decode_float(current_offset)
-				current_offset += 4
-	
+				if size > 0:
+					result[field_name] = data.slice(current_offset, current_offset + size)
+				else:
+					push_warning("遇到动态或不支持的基础类型: ", field_type, "，跳过解析")
+					result[field_name] = null
+		
+		current_offset += size if size > 0 else 0
+		
 	return result

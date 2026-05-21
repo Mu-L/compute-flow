@@ -97,7 +97,6 @@ func updata_image() -> Image:
 ## 更新uniform绑定
 func _set_uniform()-> RID:
 	uniform_type =  RenderingDevice.UNIFORM_TYPE_IMAGE
-	
 	image_format = _get_rd_format()
 	
 	if texture_node is SubViewport :

@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="ComputeFlowBlackBoard" format=3 uid="uid://cq0gnhwb6vvyo"]
+
+[ext_resource type="Script" uid="uid://bvc6rggdtm4p8" path="res://addons/compute_flow/compute_shaders/uniforms/struct/push_constant.gd" id="1_t0s4o"]
+[ext_resource type="Script" uid="uid://4f6bvih4pntw" path="res://addons/compute_flow/compute_shaders/compute_shader_black_board.gd" id="2_t8qc5"]
+[ext_resource type="Script" uid="uid://f23hc3brb0e6" path="res://addons/compute_flow/compute_shaders/uniforms/struct/struct.gd" id="3_ct4h1"]
+
+[sub_resource type="Resource" id="Resource_kqoi8"]
+script = ExtResource("1_t0s4o")
+fields = "float time = 0.0   "
+data = {
+"time": 0.0
+}
+data_list = ["time"]
+type_index = {
+"time": 3
+}
+
+[sub_resource type="Resource" id="Resource_t0s4o"]
+script = ExtResource("3_ct4h1")
+fields = "vec2 resolution = vec2(1920, 1080)
+vec2 inv_resolution = vec2(0.00052,0.000926)
+float delta_time= 0.016666
+float scale= 1.0"
+data = {
+"delta_time": 0.016666,
+"inv_resolution": Vector2(0.00052, 0.000926),
+"resolution": Vector2(1920, 0),
+"scale": 1.0
+}
+data_list = ["resolution", "inv_resolution", "scale", "delta_time"]
+
+[resource]
+script = ExtResource("2_t8qc5")
+glsl_file = "D:/godot插件/compute-flow/examples/演示案例/画面后处理.glsl"
+global_size = Vector3i(1280, 720, 1)
+macro = ""
+push_constant = SubResource("Resource_kqoi8")
+structs = Array[ExtResource("3_ct4h1")]([SubResource("Resource_t0s4o")])

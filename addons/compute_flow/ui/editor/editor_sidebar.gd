@@ -16,6 +16,8 @@ extends Control
 @onready var audio_buffer: Button = %AudioBuffer
 @onready var bridge_uniform: Button = %BridgeUniform
 
+@onready var v_separator: VSeparator = %VSeparator
+
 ## 黑板容器
 @onready var black_board_foldable: FoldableContainer = %BlackBoard
 @onready var shader_name: Button = %shader_name
@@ -41,20 +43,25 @@ extends Control
 var current_node:Node = null
 var compute_shader:ComputeFlow = null
 ## 黑板数据
-var black_board:ComputeFlowBlackBoard = null
+var black_board:ComputeFlowBlackBoard = null:
+	set(v):
+		black_board = v
+		if compute_shader:
+			_blackboard_sync(compute_shader)
+
 ## glsl 文件路径
 var file_path:String
 # 编辑器
 var scene_root
-var _undo_redo:EditorUndoRedoManager
+var urm:EditorUndoRedoManager
 
 signal switch_position()
 
 func _ready() -> void:
 	# 获取编辑器接口
 	scene_root = EditorInterface.get_edited_scene_root()
-	_undo_redo = EditorInterface.get_editor_undo_redo()
-	_undo_redo.clear_history(_undo_redo.get_object_history_id(scene_root))
+	urm = EditorInterface.get_editor_undo_redo()
+	urm.clear_history(urm.get_object_history_id(scene_root))
 
 #region 插件初始,切换当前节点
 func update_for_node(node:Node) -> void:
@@ -100,6 +107,7 @@ func _show_button(type: int) -> void:
 			storage_buffer.show()
 			
 		2:  # ComputeSet
+			v_separator.show()
 			flow_container.show()
 			image_buffer.show()
 			sampler_2d.show()
@@ -114,147 +122,148 @@ func _show_worring(worring:String):
 	get_child(0).hide()
 	worring_label.show()
 	worring_label.text = worring
+
 #endregion
 
 #region 添加子节点
 func _on_compute_set_pressed() -> void:
-	if not _undo_redo or not current_node:
+	if not urm or not current_node:
 		return
 	
-	_undo_redo.create_action("Add ComputeSet")
+	urm.create_action("Add ComputeSet")
 	
 	# 保存节点引用
 	var target_parent = current_node
 	var new_node = ComputeSet.new()
 	
 	# Do操作
-	_undo_redo.add_do_method(target_parent, "add_child", new_node)
-	_undo_redo.add_do_property(new_node, "name", "ComputeSet")
-	_undo_redo.add_do_property(new_node, "owner", get_tree().edited_scene_root)
+	urm.add_do_method(target_parent, "add_child", new_node)
+	urm.add_do_property(new_node, "name", "ComputeSet")
+	urm.add_do_property(new_node, "owner", get_tree().edited_scene_root)
 	
 	# Undo操作
-	_undo_redo.add_undo_method(target_parent, "remove_child", new_node)
+	urm.add_undo_method(target_parent, "remove_child", new_node)
 	
-	_undo_redo.commit_action()
+	urm.commit_action()
 
 func _on_double_buffering_set_pressed() -> void:
-	if not _undo_redo or not current_node:
+	if not urm or not current_node:
 		return
 	
-	_undo_redo.create_action("Add DoubleBufferingSet")
+	urm.create_action("Add DoubleBufferingSet")
 	
 	var target_parent = current_node
 	var new_node = DoubleBufferingSet.new()
 	
-	_undo_redo.add_do_method(target_parent, "add_child", new_node)
-	_undo_redo.add_do_property(new_node, "name", "DoubleBufferingSet")
-	_undo_redo.add_do_property(new_node, "owner", get_tree().edited_scene_root)
+	urm.add_do_method(target_parent, "add_child", new_node)
+	urm.add_do_property(new_node, "name", "DoubleBufferingSet")
+	urm.add_do_property(new_node, "owner", get_tree().edited_scene_root)
 	
-	_undo_redo.add_undo_method(target_parent, "remove_child", new_node)
+	urm.add_undo_method(target_parent, "remove_child", new_node)
 	
-	_undo_redo.commit_action()
+	urm.commit_action()
 
 func _on_image_buffer_pressed() -> void:
-	if not _undo_redo or not current_node:
+	if not urm or not current_node:
 		return
 	
-	_undo_redo.create_action("Add ImageBuffer")
+	urm.create_action("Add ImageBuffer")
 	
 	var target_parent = current_node
 	var new_node = ImageUniform.new()
 	
-	_undo_redo.add_do_method(target_parent, "add_child", new_node)
-	_undo_redo.add_do_property(new_node, "name", "ImageBuffer")
-	_undo_redo.add_do_property(new_node, "owner", get_tree().edited_scene_root)
+	urm.add_do_method(target_parent, "add_child", new_node)
+	urm.add_do_property(new_node, "name", "ImageBuffer")
+	urm.add_do_property(new_node, "owner", get_tree().edited_scene_root)
 	
-	_undo_redo.add_undo_method(target_parent, "remove_child", new_node)
+	urm.add_undo_method(target_parent, "remove_child", new_node)
 	
-	_undo_redo.commit_action()
+	urm.commit_action()
 
 func _on_sampler_2d_pressed() -> void:
-	if not _undo_redo or not current_node:
+	if not urm or not current_node:
 		return
 	
-	_undo_redo.create_action("Add Sampler2D")
+	urm.create_action("Add Sampler2D")
 	
 	var target_parent = current_node
 	var new_node = Sampler2DUniform.new()
 	
-	_undo_redo.add_do_method(target_parent, "add_child", new_node)
-	_undo_redo.add_do_property(new_node, "name", "Sampler2D")
-	_undo_redo.add_do_property(new_node, "owner", get_tree().edited_scene_root)
+	urm.add_do_method(target_parent, "add_child", new_node)
+	urm.add_do_property(new_node, "name", "Sampler2D")
+	urm.add_do_property(new_node, "owner", get_tree().edited_scene_root)
 	
-	_undo_redo.add_undo_method(target_parent, "remove_child", new_node)
+	urm.add_undo_method(target_parent, "remove_child", new_node)
 	
-	_undo_redo.commit_action()
+	urm.commit_action()
 
 func _on_uniform_buffer_pressed() -> void:
-	if not _undo_redo or not current_node:
+	if not urm or not current_node:
 		return
 	
-	_undo_redo.create_action("Add UniformBuffer")
+	urm.create_action("Add UniformBuffer")
 	
 	var target_parent = current_node
 	var new_node = UniformBuffer.new()
 	
-	_undo_redo.add_do_method(target_parent, "add_child", new_node)
-	_undo_redo.add_do_property(new_node, "name", "UniformBuffer")
-	_undo_redo.add_do_property(new_node, "owner", get_tree().edited_scene_root)
+	urm.add_do_method(target_parent, "add_child", new_node)
+	urm.add_do_property(new_node, "name", "UniformBuffer")
+	urm.add_do_property(new_node, "owner", get_tree().edited_scene_root)
 	
-	_undo_redo.add_undo_method(target_parent, "remove_child", new_node)
+	urm.add_undo_method(target_parent, "remove_child", new_node)
 	
-	_undo_redo.commit_action()
+	urm.commit_action()
 
 func _on_storage_buffer_pressed() -> void:
-	if not _undo_redo or not current_node:
+	if not urm or not current_node:
 		return
 	
-	_undo_redo.create_action("Add StorageBuffer")
+	urm.create_action("Add StorageBuffer")
 	
 	var target_parent = current_node
 	var new_node = StorageBuffer.new()
 	
-	_undo_redo.add_do_method(target_parent, "add_child", new_node)
-	_undo_redo.add_do_property(new_node, "name", "StorageBuffer")
-	_undo_redo.add_do_property(new_node, "owner", get_tree().edited_scene_root)
+	urm.add_do_method(target_parent, "add_child", new_node)
+	urm.add_do_property(new_node, "name", "StorageBuffer")
+	urm.add_do_property(new_node, "owner", get_tree().edited_scene_root)
 	
-	_undo_redo.add_undo_method(target_parent, "remove_child", new_node)
+	urm.add_undo_method(target_parent, "remove_child", new_node)
 	
-	_undo_redo.commit_action()
+	urm.commit_action()
 
 func _on_audio_buffer_pressed() -> void:
-	if not _undo_redo or not current_node:
+	if not urm or not current_node:
 		return
 	
-	_undo_redo.create_action("Add StorageBuffer")
+	urm.create_action("Add StorageBuffer")
 	
 	var target_parent = current_node
 	var new_node = AudioBuffer.new()
 	
-	_undo_redo.add_do_method(target_parent, "add_child", new_node)
-	_undo_redo.add_do_property(new_node, "name", "StorageBuffer")
-	_undo_redo.add_do_property(new_node, "owner", get_tree().edited_scene_root)
+	urm.add_do_method(target_parent, "add_child", new_node)
+	urm.add_do_property(new_node, "name", "StorageBuffer")
+	urm.add_do_property(new_node, "owner", get_tree().edited_scene_root)
 	
-	_undo_redo.add_undo_method(target_parent, "remove_child", new_node)
+	urm.add_undo_method(target_parent, "remove_child", new_node)
 	
-	_undo_redo.commit_action()
+	urm.commit_action()
 
 func _on_bridge_uniform_pressed() -> void:
-	if not _undo_redo or not current_node:
+	if not urm or not current_node:
 		return
 	
-	_undo_redo.create_action("Add BridgeUniform")
+	urm.create_action("Add BridgeUniform")
 	
 	var target_parent = current_node
 	var new_node = BridgeUniform.new()
 	
-	_undo_redo.add_do_method(target_parent, "add_child", new_node)
-	_undo_redo.add_do_property(new_node, "name", "BridgeUniform")
-	_undo_redo.add_do_property(new_node, "owner", get_tree().edited_scene_root)
+	urm.add_do_method(target_parent, "add_child", new_node)
+	urm.add_do_property(new_node, "name", "BridgeUniform")
+	urm.add_do_property(new_node, "owner", get_tree().edited_scene_root)
 	
-	_undo_redo.add_undo_method(target_parent, "remove_child", new_node)
+	urm.add_undo_method(target_parent, "remove_child", new_node)
 	
-	_undo_redo.commit_action()
+	urm.commit_action()
 
 
 #endregion
@@ -285,15 +294,12 @@ func _show_glsl_selection_dialog() -> void:
 				var glsl_resource = ResourceLoader.load(file_path)
 				if glsl_resource:
 					black_board.glsl_file = file_path
-		else:
-			# 如果不是glsl文件，视为文件夹
-			_create_glsl_in_directory(selected_path)
-		
+
 		file_dialog.queue_free()
 	)
 	
 	file_dialog.dir_selected.connect(func(selected_dir: String):
-		_create_glsl_in_directory(selected_dir)
+		_create_custom_glsl_file(selected_dir)
 		file_dialog.queue_free()
 	)
 	
@@ -303,30 +309,6 @@ func _show_glsl_selection_dialog() -> void:
 	
 	get_parent().add_child(file_dialog)
 	file_dialog.popup_centered_ratio(0.8)
-
-## 在指定目录创建GLSL文件
-func _create_glsl_in_directory(directory_path: String) -> void:
-	var uid = ResourceUID.create_id()
-	var default_filename = "compute_shader_" + str(uid) + ".glsl"
-	var new_file_path = directory_path.path_join(default_filename)
-	
-	var file = FileAccess.open(new_file_path, FileAccess.WRITE)
-	if file:
-		file.close()
-		print("GLSL文件创建成功: ", new_file_path)
-		
-		# 设置文件路径
-		file_path = new_file_path
-		shader_name.text = new_file_path.get_file().get_basename()
-		
-		# 刷新资源系统
-		await get_tree().create_timer(0.1).timeout
-		EditorInterface.get_resource_filesystem().scan()
-		await get_tree().create_timer(0.1).timeout
-		
-		black_board.glsl_file = new_file_path
-	else:
-		print("创建文件失败")
 
 # 打开文件所在文件夹
 func _open_glsl_file_location() -> void:
@@ -358,9 +340,70 @@ func _open_glsl_file_location() -> void:
 	
 	get_parent().add_child(dir_dialog)
 	dir_dialog.popup_centered_ratio(0.8)
+
+# 新建shader
+func _on_new_shader_pressed() -> void:
+	var save_dialog = EditorFileDialog.new()
+	save_dialog.file_mode = EditorFileDialog.FILE_MODE_SAVE_FILE
+	save_dialog.filters = PackedStringArray(["*.glsl"])
+	save_dialog.access = EditorFileDialog.ACCESS_FILESYSTEM
+	save_dialog.title = "创建新的 GLSL 文件"
+	save_dialog.current_file = "new_compute_shader.glsl"
+	
+	save_dialog.file_selected.connect(func(selected_path: String):
+		_create_custom_glsl_file(selected_path)
+		save_dialog.queue_free()
+	)
+	
+	save_dialog.canceled.connect(func():
+		save_dialog.queue_free()
+	)
+	
+	get_parent().add_child(save_dialog)
+	save_dialog.popup_centered_ratio(0.8)
+
+# 写入和激活新文件
+func _create_custom_glsl_file(new_file_path: String) -> void:
+	if new_file_path.get_extension() != "glsl":
+		new_file_path += ".glsl"
+		
+	# 创建 GLSL 源码文件
+	var file = FileAccess.open(new_file_path, FileAccess.WRITE)
+	if file:
+		file.store_string("#pragma version 450\n// 在这里编写你的计算着色器\n")
+		file.close()
+		
+		file_path = new_file_path
+		shader_name.text = new_file_path.get_file().get_basename()
+		
+		# 自动在同目录下创建同名的黑板 Resource 文件
+		var blackboard_path = new_file_path.replace(".glsl", ".tres")
+		
+		var new_blackboard = ComputeFlowBlackBoard.new() 
+		new_blackboard.glsl_file = new_file_path # 顺便完成双向绑定
+		
+		# 保存资源到磁盘
+		ResourceSaver.save(new_blackboard, blackboard_path)
+		print("配套黑板资源创建成功: ", blackboard_path)
+		
+		await get_tree().create_timer(0.1).timeout
+		EditorInterface.get_resource_filesystem().scan()
+		await get_tree().create_timer(0.1).timeout
+		
+		black_board = new_blackboard
+	else:
+		print("创建文件失败: ", new_file_path)
 #endregion
 
 #region 黑板数据编辑
+func _blackboard_sync(node:Node):
+	if !node.get("black_board"):
+		return
+	if node.black_board != black_board:
+		node.black_board = black_board
+	for child in node.get_children():
+		_blackboard_sync(child)
+
 ## 加载黑板数据到UI
 func update_ui_from_blackboard() -> void:
 	if black_board == current_node.black_board:
@@ -441,9 +484,9 @@ func _on_edit_gui_input(event: InputEvent,text_edit) -> void:
 			add_child(editor)
 			editor.owner = get_tree().current_scene
 			editor.updata_editor(text_edit)
-
+## 构建shader
 func _on_shader_initialization_pressed() -> void:
 	compute_shader.build_glsl_source()
-
+## 打开外部编辑器编辑shader
 func _on_shader_edit_pressed() -> void:
 	compute_shader.edit_shader()

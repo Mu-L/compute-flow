@@ -19,11 +19,17 @@ class_name ComputeFlow
 			return
 		restart = value
 		if restart:
-			print("重启着色器")
+			print("重启计算着色器: ",name)
 			_restart()
-			
+
 ## 暂停运行
-@export var debug := false
+@export var debug := false:
+	set(v):
+		debug = v
+		if black_board:
+			if black_board.push_constant:
+				black_board.push_constant.debug = v 
+
 @export var stop := false:
 	set(v):
 		if v!= stop:
@@ -41,15 +47,12 @@ var is_ready:=false
 ## 是否存在重名uniform
 var has_dup_uniforms:=false 
 
+
 func _ready() -> void:
-	if !black_board:
-		black_board = ComputeFlowBlackBoard.new()
-		var folder_path = "res://addons/compute_flow/data/black_board_data/"
-		black_board.resource_path = folder_path + str(ResourceUID.create_id())+ ".tres"
-		ResourceSaver.save(black_board, folder_path)
 	if Engine.is_editor_hint():
 		return
 	await update_binding()
+
 #<==============================公有方法==============================>##
 
 ## <公有方法>设置工作组
@@ -90,7 +93,7 @@ func run() -> void:
 	if black_board.push_constant:
 		var aligned_data := black_board.push_constant.get_byte_array()
 		if debug:
-			print("black_board.push_constant: ",black_board.push_constant.get_parsed_data())
+			print("push_constant: ",black_board.push_constant.type_index, black_board.push_constant.get_parsed_data())
 		rd.compute_list_set_push_constant(compute_list, aligned_data, aligned_data.size())
 
 	rd.compute_list_dispatch(compute_list, work_group.x, work_group.y, work_group.z)
@@ -157,7 +160,7 @@ func _restart():
 	if black_board.push_constant:
 		black_board.push_constant.set_values()
 	run()
-	await get_tree().create_timer(0.1).timeout
+	await get_tree().create_timer(1).timeout
 	restart = false
 
 # <==============================编辑器工具==============================>

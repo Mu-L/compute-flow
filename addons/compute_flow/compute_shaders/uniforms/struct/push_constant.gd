@@ -50,6 +50,7 @@ var data_size := 0
 # ==================== 公共接口 ==================== ##
 ## 更新单个字段的值
 func set_value(key: String, value: Variant) -> void:
+	
 	if data_size == 0:
 		# 从字典构建字节索引
 		var template = ComputeFlowTool.generate_field_index(data,data_list,0)
@@ -63,24 +64,25 @@ func set_value(key: String, value: Variant) -> void:
 			return
 		set_values()
 		return
-	if debug:
-		if not key in data:
-			push_error("PushConstant: 字段 '%s' 不存在" % key)
-			return
-		# 验证类型
-		var expected_type = typeof(data[key])
-		var actual_type = typeof(value)
-		if expected_type != actual_type:
-			push_error("PushConstant: 字段 '%s' 类型错误" % key)
-			return
 	# 直接更新字节数组
 	var value_bytes = ComputeFlowTool.get_value_bytes(value)
 	var idx = _field_index.get(key,0)
 	# 写入字节
 	for i in range(value_bytes.size()):
 		if idx + i < buffer_byte.size():
-			buffer_byte[idx + i] = value_bytes[i]	
-	
+			buffer_byte[idx + i] = value_bytes[i]
+			
+	if debug:
+		if not key in data:
+			push_error("PushConstant: 字段 '%s' 不存在" % key)
+			return
+		# 验证类型
+		var expected_type = ComputeFlowTool.get_type(data[key])
+		var actual_type = ComputeFlowTool.get_type(value)
+		if expected_type != actual_type:
+			push_error("PushConstant: 字段 '%s' 类型错误" % key)
+			return
+			
 ## 批量更新多个字段
 func set_values(updates: Dictionary = {}) -> void:
 	if updates=={}:
@@ -100,7 +102,6 @@ func get_byte_array() -> PackedByteArray:
 func get_declaration() -> String:
 	var lines = PackedStringArray()
 	lines.append("layout(push_constant) uniform PushConstants {")
-
 	for member_name in data_list:
 		var value = data[member_name]
 		var type_name = ComputeFlowTool.get_type_name(value)

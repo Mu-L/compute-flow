@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://r8er472dlcrt" path="res://examples/post_processing/post_processing.gd" id="1_p3gr1"]
 [ext_resource type="Script" uid="uid://dqr3qkdjyocnk" path="res://addons/compute_flow/compute_shaders/compute_flow.gd" id="1_sk4q5"]
-[ext_resource type="Texture2D" uid="uid://fiu1he1x337o" path="res://icon.svg" id="2_n70jk"]
+[ext_resource type="Texture2D" uid="uid://fiu1he1x337o" path="res://addons/icon.svg" id="2_n70jk"]
 [ext_resource type="Script" uid="uid://bhvcnu8j1dddl" path="res://addons/compute_flow/compute_shaders/set/compute_set.gd" id="3_p3gr1"]
 [ext_resource type="Resource" uid="uid://b34csvpa0nm2a" path="res://addons/compute_flow/data/black_board_data/post_processing.tres" id="4_p3gr1"]
 [ext_resource type="Script" uid="uid://drt56l5axu0r2" path="res://addons/compute_flow/compute_shaders/uniforms/image/sampler2D_uniform.gd" id="4_wv33b"]
@@ -37,7 +37,6 @@ black_board = ExtResource("4_p3gr1")
 [node name="input_image" type="Node" parent="ComputeFlow/ComputeSet" unique_id=1160392669 node_paths=PackedStringArray("texture_node")]
 script = ExtResource("4_wv33b")
 texture_node = NodePath("../../../SubViewportContainer/SubViewport")
-image_size = Vector2i(1280, 720)
 uniform_name = "input_image"
 black_board = ExtResource("4_p3gr1")
 

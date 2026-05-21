@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://d8cb7braaeia"
+path="res://.godot/imported/后处理.glsl-a0ca59fe7d636871b04b1335fd3c9b0c.res"
+
+[deps]
+
+source_file="res://examples/post_processing/后处理.glsl"
+dest_files=["res://.godot/imported/后处理.glsl-a0ca59fe7d636871b04b1335fd3c9b0c.res"]
+
+[params]
+

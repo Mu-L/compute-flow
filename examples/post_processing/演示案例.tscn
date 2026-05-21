@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://cyla7hntrwhia"]
+
+[ext_resource type="Texture2D" uid="uid://fiu1he1x337o" path="res://addons/icon.svg" id="1_rjp87"]
+
+[node name="演示案例" type="Node" unique_id=305778706]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="." unique_id=886472179]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=98562304]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1280, 720)
+render_target_update_mode = 4
+
+[node name="Icon" type="Sprite2D" parent="SubViewportContainer/SubViewport" unique_id=1171387983]
+position = Vector2(275, 302)
+texture = ExtResource("1_rjp87")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="SubViewportContainer/SubViewport" unique_id=35350723]
+offset_left = 674.0
+offset_top = 231.0
+offset_right = 1102.0
+offset_bottom = 381.0
+text = "后处理演示案例
+通过compute_flow插件传递viewport给计算着色器
+计算着色器进行画面处理
+"
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1467508885]
+offset_right = 40.0
+offset_bottom = 40.0

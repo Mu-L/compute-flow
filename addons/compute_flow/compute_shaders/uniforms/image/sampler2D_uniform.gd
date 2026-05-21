@@ -41,7 +41,6 @@ enum SamplerType {
 
 ## 获取rd_uniform
 func get_rd_uniform() -> RDUniform:
-
 	rid = RID()
 	_set_uniform()
 	rd_uniform = RDUniform.new()
@@ -69,7 +68,10 @@ func get_declaration(set:int)->String:
 func _set_uniform():
 	## 创建纹理
 	if texture_node is SubViewport :
-		rid =  RenderingServer.texture_get_rd_texture( # 将子视口rid转成渲染服务器rid
+		texture_node.render_target_clear_mode = 0
+		texture_node.render_target_update_mode = 4
+		texture_node.transparent_bg = true
+		rid =  RenderingServer.texture_get_rd_texture( 
 		RenderingServer.viewport_get_texture( # 获取子视口的rid
 			texture_node.get_viewport_rid() ))
 		return rid
@@ -102,8 +104,6 @@ func _set_uniform():
 	data_array.append_array(image_data)
 	# 创建纹理
 	rid = rd.texture_create(texture_format, view, [data_array])
-	
-
 
 ## 创建采样器
 func _create_sampler_by_type() -> RID:

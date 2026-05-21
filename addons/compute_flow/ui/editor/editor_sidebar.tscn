@@ -1,18 +1,19 @@
 [gd_scene format=3 uid="uid://dklawglii2m5m"]
 
-[ext_resource type="Script" uid="uid://dtgqtoyjp83er" path="res://addons/compute_shader/ui/editor/editor_sidebar.gd" id="1_prudf"]
-[ext_resource type="Texture2D" uid="uid://dcafrg0ni7wdo" path="res://addons/compute_shader/ui/icon/set.svg" id="2_x3hw2"]
-[ext_resource type="Texture2D" uid="uid://b53q0shhy3bym" path="res://addons/compute_shader/ui/icon/double_buffering_set.svg" id="3_rjcwb"]
-[ext_resource type="Texture2D" uid="uid://c87bx2sxf5nwj" path="res://addons/compute_shader/ui/icon/image_uniform.svg" id="4_unjfs"]
-[ext_resource type="Texture2D" uid="uid://ba1uh4mggvxy0" path="res://addons/compute_shader/ui/icon/sampler2d.svg" id="5_h6ckh"]
-[ext_resource type="Texture2D" uid="uid://bj7kvfplxme7p" path="res://addons/compute_shader/ui/icon/uniform_buffer.svg" id="6_oiipm"]
-[ext_resource type="Texture2D" uid="uid://d1fwfqxltnoqa" path="res://addons/compute_shader/ui/icon/storage_buffer.svg" id="7_aevgr"]
-[ext_resource type="Texture2D" uid="uid://0v0dr6x2knfj" path="res://addons/compute_shader/ui/icon/audiobuffer.svg" id="8_ecl2e"]
-[ext_resource type="Texture2D" uid="uid://bw8f3nk17fpcg" path="res://addons/compute_shader/ui/icon/uniform.svg" id="8_h6ckh"]
-[ext_resource type="Texture2D" uid="uid://v2fnd7dcxvhy" path="res://addons/compute_shader/ui/icon/compute_shader.svg" id="9_3mnrs"]
-[ext_resource type="Texture2D" uid="uid://6p30pdjbxiei" path="res://addons/compute_shader/ui/icon/editor.svg" id="9_aevgr"]
-[ext_resource type="Script" uid="uid://bnswqjeoi4418" path="res://addons/compute_shader/ui/editor/structs_foldable.gd" id="9_oiipm"]
-[ext_resource type="Script" uid="uid://ct1brxlnr7ry" path="res://addons/compute_shader/ui/editor/glsl_highlighter.gd" id="12_nyo4a"]
+[ext_resource type="Script" uid="uid://dtgqtoyjp83er" path="res://addons/compute_flow/ui/editor/editor_sidebar.gd" id="1_prudf"]
+[ext_resource type="Texture2D" uid="uid://dcafrg0ni7wdo" path="res://addons/compute_flow/ui/icon/set.svg" id="2_x3hw2"]
+[ext_resource type="Texture2D" uid="uid://b53q0shhy3bym" path="res://addons/compute_flow/ui/icon/double_buffering_set.svg" id="3_rjcwb"]
+[ext_resource type="Texture2D" uid="uid://c87bx2sxf5nwj" path="res://addons/compute_flow/ui/icon/image_uniform.svg" id="4_unjfs"]
+[ext_resource type="Texture2D" uid="uid://ba1uh4mggvxy0" path="res://addons/compute_flow/ui/icon/sampler2d.svg" id="5_h6ckh"]
+[ext_resource type="Texture2D" uid="uid://bj7kvfplxme7p" path="res://addons/compute_flow/ui/icon/uniform_buffer.svg" id="6_oiipm"]
+[ext_resource type="Texture2D" uid="uid://d1fwfqxltnoqa" path="res://addons/compute_flow/ui/icon/storage_buffer.svg" id="7_aevgr"]
+[ext_resource type="Texture2D" uid="uid://0v0dr6x2knfj" path="res://addons/compute_flow/ui/icon/audiobuffer.svg" id="8_ecl2e"]
+[ext_resource type="Texture2D" uid="uid://bw8f3nk17fpcg" path="res://addons/compute_flow/ui/icon/uniform.svg" id="8_h6ckh"]
+[ext_resource type="Texture2D" uid="uid://v2fnd7dcxvhy" path="res://addons/compute_flow/ui/icon/compute_shader.svg" id="9_3mnrs"]
+[ext_resource type="Texture2D" uid="uid://6p30pdjbxiei" path="res://addons/compute_flow/ui/icon/editor.svg" id="9_aevgr"]
+[ext_resource type="Script" uid="uid://bnswqjeoi4418" path="res://addons/compute_flow/ui/editor/structs_foldable.gd" id="9_oiipm"]
+[ext_resource type="Texture2D" uid="uid://civ2j4tdn64qy" path="res://addons/compute_flow/ui/icon/add_button.svg" id="10_xgkg5"]
+[ext_resource type="Script" uid="uid://ct1brxlnr7ry" path="res://addons/compute_flow/ui/editor/glsl_highlighter.gd" id="12_nyo4a"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nyo4a"]
 content_margin_left = 10.0
@@ -407,6 +408,10 @@ tooltip_text = "Sampler2D"
 icon = ExtResource("5_h6ckh")
 icon_alignment = 1
 
+[node name="VSeparator" type="VSeparator" parent="SplitContainer/MarginContainer/BoxContainer/FlowContainer" unique_id=1794377107]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="UniformBuffer" type="Button" parent="SplitContainer/MarginContainer/BoxContainer/FlowContainer" unique_id=1643055577]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 28)
@@ -455,6 +460,15 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "shader_name"
 clip_text = true
+
+[node name="new_shader" type="Button" parent="SplitContainer/MarginContainer/BoxContainer/BoxContainer" unique_id=192144763]
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+tooltip_text = "Build GLSL Source"
+icon = ExtResource("10_xgkg5")
+flat = true
+icon_alignment = 1
 
 [node name="shader initialization" type="Button" parent="SplitContainer/MarginContainer/BoxContainer/BoxContainer" unique_id=1833062678]
 custom_minimum_size = Vector2(45, 0)
@@ -676,6 +690,7 @@ size_flags_vertical = 0
 [connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/FlowContainer/AudioBuffer" to="." method="_on_audio_buffer_pressed"]
 [connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/FlowContainer/BridgeUniform" to="." method="_on_bridge_uniform_pressed"]
 [connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/BoxContainer/shader_name" to="." method="_on_shader_name_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/BoxContainer/new_shader" to="." method="_on_new_shader_pressed"]
 [connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/BoxContainer/shader initialization" to="." method="_on_shader_initialization_pressed"]
 [connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/BoxContainer/shader_edit" to="." method="_on_shader_edit_pressed"]
 [connection signal="value_changed" from="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/BoxContainer2/global_x" to="." method="_on_global_x_value_changed"]

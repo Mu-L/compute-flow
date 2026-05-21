@@ -9,6 +9,7 @@ layout(push_constant) uniform PushConstants {
     float time;
 };
 
+
 //set 0
 layout(set = 0, binding = 0) uniform sampler2D input_image;
 layout(set = 0, binding = 1, rgba8) writeonly uniform image2D output_image;
@@ -17,6 +18,8 @@ layout(set = 0, binding = 1, rgba8) writeonly uniform image2D output_image;
 
 void main() {
     ivec2 pixel = ivec2(gl_GlobalInvocationID.xy);
-    vec4 color = texelFetch(input_image, pixel, 0);
+    ivec2 texSize = textureSize(input_image, 0);
+    vec2 uv = vec2(pixel) / vec2(texSize);
+    vec4 color = texture(input_image, uv);
     imageStore(output_image, pixel, vec4(sin(time), color.gb, color.a));
 }
