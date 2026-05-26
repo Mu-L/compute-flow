@@ -26,7 +26,7 @@ func _ready() -> void:
 	remove_button.tooltip_text = "delete mode\n"
 	add_title_bar_control(remove_button)
 	remove_button.toggled.connect(_on_remove_button_toggled)
-	
+
 ## 点击添加按钮
 func _on_add_button_pressed():
 	var stuck_editor =  STRUCK_EDIT.instantiate()
@@ -44,3 +44,13 @@ func _on_remove_button_toggled(toggled):
 	else :
 		delete_mode = false
 		on_delete.emit(delete_mode)
+
+func sync_structs():
+	for i:Node in box_container.get_children():
+		i.queue_free()
+	for i in black_board.structs:
+		var stuck_editor:StructEditor = preload("uid://caoxj2as6gtxb").instantiate()
+		box_container.add_child(stuck_editor)
+		stuck_editor.owner = get_tree().current_scene
+		stuck_editor.black_board = black_board
+		stuck_editor.updata_struct(i)

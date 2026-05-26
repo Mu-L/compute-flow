@@ -21,7 +21,6 @@ func _ready() -> void:
 		return
 
 func get_set()-> RID:
-	
 	await current_buffer.get_rd_uniform()
 	await next_buffer.get_rd_uniform()
 	

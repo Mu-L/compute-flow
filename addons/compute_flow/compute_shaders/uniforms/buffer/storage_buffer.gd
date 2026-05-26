@@ -3,8 +3,8 @@
 extends ComputeUniform
 class_name StorageBuffer
 
-## buffer中的元素数量,当element_count为0 或者开启match_threads时,会自动匹配着色器最大粒子数量
-@export var element_count:int = 0
+## buffer中的元素数量,当element_count为-1 或者开启match_threads时,会自动匹配着色器最大粒子数量
+@export var element_count:int = -1
 @export var struct:=""
 @export var member_name:=""
 
@@ -17,20 +17,23 @@ var _field_index: Dictionary = {}
 ## 字节化的buffer数据
 var buffer_byte := PackedByteArray()
 ## 总数据大小
-var data_size := 0
+var data_size := -1
 ## debug 模式,会打印更多信息
 @export_category("debug")
 
-
 #<=============================公有方法=============================>##
-## 设置元素数量
-func set_element_count(count:=element_count):
-	element_count = count
+
+# 设置元素数量
+func set_element_count(count:=-1):
+	if count != -1:
+		element_count = count
+		return
+
 	var global_size = black_board.global_size
-	if element_count == 0:
+	if element_count == -1:
 		element_count = global_size.x * global_size.y * global_size.z
 
-### 更新单个字段的值
+## 更新单个字段的值
 func set_value(key: String, value: Variant) -> void:
 	if debug:
 		print("更新%s :%s"%[key,value])
@@ -62,7 +65,7 @@ func get_byte_array() -> PackedByteArray:
 	return rd.buffer_get_data(rid)
 
 func get_rd_uniform() -> RDUniform:
-	if data_size == 0:
+	if data_size ==  -1:
 		_init_data()
 	rd_uniform = RDUniform.new()
 	rd_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
@@ -72,9 +75,15 @@ func get_rd_uniform() -> RDUniform:
 	return rd_uniform
 
 func get_declaration(set: int) -> String:
+	var warning = _get_configuration_warnings()
+	if warning:
+		printerr(warning)
+	if member_name == uniform_name:
+		printerr("StorageBuffer %s :member_name 不能和 uniform_name相同" % self.uniform_name)
+		
 	var lines = PackedStringArray()
 	lines.append("layout(set = %s, binding = %s, std430) buffer %s {" % [set, binding, uniform_name])
-	if element_count==0:
+	if element_count== -1:
 		lines.append("    %s %s[];" % [struct, member_name])
 	elif element_count == 1:
 		lines.append("    %s %s;" % [struct, member_name])
@@ -91,15 +100,22 @@ func _init_data()-> void:
 	set_element_count()
 	var _struct:Struct = null
 	for i in black_board.structs:
-		if i.resource_name == struct:
+		if i.struct_name == struct:
 			_struct=i
+	if !black_board:
+		printerr("black_board %s不存在"% black_board)
+		return
+	if !_struct:
+		printerr("Struct %s不存在"% struct)
+		return
 	data = _struct.data
 	data_list= _struct.data_list
 	type_index = _struct.type_index
 	
 	var template = ComputeFlowTool.generate_field_index(data,data_list,2)
 	_field_index = template[0]
-	data_size = template[1]*element_count
-
+	data_size = template[1] * element_count
 	buffer_byte.resize( data_size)
 	rid = rd.storage_buffer_create(data_size, buffer_byte)
+	if debug:
+		print("%s :\n	元素数量:%s\n	data%s\n	data_list%s\n" %[name,element_count,data,data_list])

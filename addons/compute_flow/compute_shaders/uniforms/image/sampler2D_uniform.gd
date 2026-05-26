@@ -39,6 +39,7 @@ enum SamplerType {
 ## 可写入CPU：CPU数据可以上传到纹理。[br]用于动态更新纹理内容，大部分情况与可更新重复。
 @export var enable_can_copy_to: bool = false
 
+
 ## 获取rd_uniform
 func get_rd_uniform() -> RDUniform:
 	rid = RID()

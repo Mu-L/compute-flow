@@ -63,5 +63,4 @@ func add_field_to_data() -> void:
 	var datas:=  ComputeFlowTool.field_to_data(fields,auto_alignment)
 	data = datas[0]
 	data_list= datas[1]
-	print("data :",data)
 	take_over_path(self.resource_path)

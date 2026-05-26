@@ -33,14 +33,10 @@ func _get_line_syntax_highlighting(line: int) -> Dictionary:
 	var res = {}
 	var text = get_text_edit().get_line(line)
 	
-	# 处理注释 (简单实现)
+	# 1. 检查是否存在注释
 	var comment_index = text.find("//")
-	if comment_index != -1:
-		res[comment_index] = {"color": COLOR_COMMENT}
-		# 注释后的内容不再处理
-		return res
 
-	# 简单的分词正则表达式（匹配单词、数字）
+	# 2. 正常的正则分词匹配
 	var regex = RegEx.new()
 	regex.compile("\\b[A-Za-z_]\\w*\\b|\\b\\d+\\.?\\d*\\b")
 	
@@ -48,6 +44,10 @@ func _get_line_syntax_highlighting(line: int) -> Dictionary:
 		var word = match.get_string()
 		var start = match.get_start()
 		
+		# 如果这个单词在注释符号后面，直接跳过（后面会统一处理注释高亮）
+		if comment_index != -1 and start >= comment_index:
+			continue
+			
 		if word in keywords:
 			res[start] = {"color": COLOR_KEYWORD}
 		elif word in types:
@@ -58,5 +58,14 @@ func _get_line_syntax_highlighting(line: int) -> Dictionary:
 			res[start] = {"color": COLOR_NUMBER}
 		else:
 			res[start] = {"color": Color.WHITE} # 默认颜色
+
+	# 3. 最后处理注释（覆盖注释 index 之后的所有高亮）
+	if comment_index != -1:
+		# 清理掉可能已经误加到注释区域的高亮起始点
+		for key in res.keys():
+			if key >= comment_index:
+				res.erase(key)
+		# 写入注释的起始变色点
+		res[comment_index] = {"color": COLOR_COMMENT}
 
 	return res

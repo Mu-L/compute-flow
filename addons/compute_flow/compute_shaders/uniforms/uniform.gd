@@ -21,6 +21,9 @@ signal rd_change()
 ## 变量绑定位
 @export_storage var binding:int
 
+## 黑板数据
+@export var black_board :ComputeFlowBlackBoard
+
 ## 着色器变量
 var rd_uniform: RDUniform
 ## 变量类型
@@ -62,6 +65,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 		warnings.append("%s 无效 : " % uniform_name +
 		"\n 根据 GLSL 语言规范，标识符必须由字母、数字和下划线组成，且首字符不能是数字")
 	return warnings
+
 ## 检查命名是否符合glsl要求
 func _is_valid_glsl_identifier(identifier: String) -> bool:
 	if identifier.is_empty():

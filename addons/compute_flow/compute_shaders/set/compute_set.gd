@@ -7,6 +7,8 @@ class_name ComputeSet
 @export_storage var set_id:int
 ## 描述
 @export var description: String = ""
+## 黑板数据
+var black_board :ComputeFlowBlackBoard
 
 ## 获取set rid
 func get_set()-> RID:
@@ -18,6 +20,8 @@ func _set_create()-> RID:
 	for uniform in get_children():
 		if uniform is ComputeUniform :
 			await uniform.get_rd_uniform()
+			if !uniform.rid:
+				printerr("%s 错误"%uniform.name)
 			uniforms.append(uniform.rd_uniform)
 	rid = rd.uniform_set_create(uniforms, shader_rid, set_id)
 	return rid

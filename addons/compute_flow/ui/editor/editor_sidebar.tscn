@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://v2fnd7dcxvhy" path="res://addons/compute_flow/ui/icon/compute_shader.svg" id="9_3mnrs"]
 [ext_resource type="Texture2D" uid="uid://6p30pdjbxiei" path="res://addons/compute_flow/ui/icon/editor.svg" id="9_aevgr"]
 [ext_resource type="Script" uid="uid://bnswqjeoi4418" path="res://addons/compute_flow/ui/editor/structs_foldable.gd" id="9_oiipm"]
+[ext_resource type="Texture2D" uid="uid://bekv483kwsupx" path="res://addons/compute_flow/ui/icon/mutil_mesh_buffer.svg" id="10_j846x"]
 [ext_resource type="Texture2D" uid="uid://civ2j4tdn64qy" path="res://addons/compute_flow/ui/icon/add_button.svg" id="10_xgkg5"]
 [ext_resource type="Script" uid="uid://ct1brxlnr7ry" path="res://addons/compute_flow/ui/editor/glsl_highlighter.gd" id="12_nyo4a"]
 
@@ -331,15 +332,15 @@ TextEdit/styles/focus = SubResource("StyleBoxFlat_ecl2e")
 TextEdit/styles/normal = SubResource("StyleBoxFlat_ecl2e")
 TextEdit/styles/read_only = SubResource("StyleBoxFlat_ecl2e")
 
-[sub_resource type="SyntaxHighlighter" id="SyntaxHighlighter_y4rru"]
-resource_local_to_scene = true
+[sub_resource type="SyntaxHighlighter" id="SyntaxHighlighter_j846x"]
 script = ExtResource("12_nyo4a")
 metadata/_custom_type_script = "uid://ct1brxlnr7ry"
 
-[sub_resource type="SyntaxHighlighter" id="SyntaxHighlighter_6q57v"]
-resource_local_to_scene = true
+[sub_resource type="SyntaxHighlighter" id="SyntaxHighlighter_xgkg5"]
 script = ExtResource("12_nyo4a")
 metadata/_custom_type_script = "uid://ct1brxlnr7ry"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xgkg5"]
 
 [node name="editor_sidebar" type="PanelContainer" unique_id=1119072108]
 anchors_preset = 15
@@ -360,108 +361,30 @@ theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
 
-[node name="BoxContainer" type="BoxContainer" parent="SplitContainer/MarginContainer" unique_id=398704478]
+[node name="NewBlackBoard" type="BoxContainer" parent="SplitContainer/MarginContainer" unique_id=752141596]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2
 vertical = true
 
-[node name="AddLabel" type="Label" parent="SplitContainer/MarginContainer/BoxContainer" unique_id=1238929530]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Add"
-
-[node name="FlowContainer" type="FlowContainer" parent="SplitContainer/MarginContainer/BoxContainer" unique_id=880561109]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 36.985)
+[node name="Control" type="Control" parent="SplitContainer/MarginContainer/NewBlackBoard" unique_id=1524697733]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 
-[node name="ComputeSet" type="Button" parent="SplitContainer/MarginContainer/BoxContainer/FlowContainer" unique_id=826813743]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 28)
-layout_mode = 2
-tooltip_text = "ComputeSet
-"
-icon = ExtResource("2_x3hw2")
-icon_alignment = 1
-
-[node name="DoubleBufferingSet" type="Button" parent="SplitContainer/MarginContainer/BoxContainer/FlowContainer" unique_id=2012210045]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 28)
-layout_mode = 2
-tooltip_text = "DoubleBufferingSet"
-icon = ExtResource("3_rjcwb")
-icon_alignment = 1
-
-[node name="ImageBuffer" type="Button" parent="SplitContainer/MarginContainer/BoxContainer/FlowContainer" unique_id=1330681645]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 28)
-layout_mode = 2
-tooltip_text = "ImageBuffer
-"
-icon = ExtResource("4_unjfs")
-icon_alignment = 1
-
-[node name="Sampler2D" type="Button" parent="SplitContainer/MarginContainer/BoxContainer/FlowContainer" unique_id=1499742221]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 28)
-layout_mode = 2
-tooltip_text = "Sampler2D"
-icon = ExtResource("5_h6ckh")
-icon_alignment = 1
-
-[node name="VSeparator" type="VSeparator" parent="SplitContainer/MarginContainer/BoxContainer/FlowContainer" unique_id=1794377107]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="UniformBuffer" type="Button" parent="SplitContainer/MarginContainer/BoxContainer/FlowContainer" unique_id=1643055577]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 28)
-layout_mode = 2
-tooltip_text = "UniformBuffer
-"
-icon = ExtResource("6_oiipm")
-icon_alignment = 1
-
-[node name="StorageBuffer" type="Button" parent="SplitContainer/MarginContainer/BoxContainer/FlowContainer" unique_id=92789120]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 28)
-layout_mode = 2
-tooltip_text = "StorageBuffer"
-icon = ExtResource("7_aevgr")
-icon_alignment = 1
-
-[node name="AudioBuffer" type="Button" parent="SplitContainer/MarginContainer/BoxContainer/FlowContainer" unique_id=1515091006]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 28)
-layout_mode = 2
-tooltip_text = "AudioBuffer"
-icon = ExtResource("8_ecl2e")
-icon_alignment = 1
-
-[node name="BridgeUniform" type="Button" parent="SplitContainer/MarginContainer/BoxContainer/FlowContainer" unique_id=85623273]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 28)
-layout_mode = 2
-tooltip_text = "BridgeUniform"
-icon = ExtResource("8_h6ckh")
-icon_alignment = 1
-
-[node name="HSeparator2" type="HSeparator" parent="SplitContainer/MarginContainer/BoxContainer" unique_id=142629422]
-layout_mode = 2
-size_flags_vertical = 8
-
-[node name="BoxContainer" type="BoxContainer" parent="SplitContainer/MarginContainer/BoxContainer" unique_id=1005176358]
+[node name="BoxContainer2" type="BoxContainer" parent="SplitContainer/MarginContainer/NewBlackBoard" unique_id=793255329]
 custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
+size_flags_vertical = 0
 
-[node name="shader_name" type="Button" parent="SplitContainer/MarginContainer/BoxContainer/BoxContainer" unique_id=701129090]
+[node name="BlackBoardName" type="Button" parent="SplitContainer/MarginContainer/NewBlackBoard/BoxContainer2" unique_id=556036833]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "shader_name"
+text = "BlackBoard"
 clip_text = true
 
-[node name="new_shader" type="Button" parent="SplitContainer/MarginContainer/BoxContainer/BoxContainer" unique_id=192144763]
+[node name="NewBlackBoard" type="Button" parent="SplitContainer/MarginContainer/NewBlackBoard/BoxContainer2" unique_id=49955749]
 custom_minimum_size = Vector2(45, 0)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -470,7 +393,151 @@ icon = ExtResource("10_xgkg5")
 flat = true
 icon_alignment = 1
 
-[node name="shader initialization" type="Button" parent="SplitContainer/MarginContainer/BoxContainer/BoxContainer" unique_id=1833062678]
+[node name="BlackBoardEdit" type="BoxContainer" parent="SplitContainer/MarginContainer" unique_id=398704478]
+unique_name_in_owner = true
+layout_mode = 2
+vertical = true
+
+[node name="AddLabel" type="Label" parent="SplitContainer/MarginContainer/BlackBoardEdit" unique_id=1238929530]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Add"
+
+[node name="ButtonContainer" type="BoxContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit" unique_id=602648364]
+unique_name_in_owner = true
+layout_mode = 2
+vertical = true
+
+[node name="SetButtons" type="FlowContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer" unique_id=880561109]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 36.985)
+layout_mode = 2
+
+[node name="ComputeSet" type="Button" parent="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/SetButtons" unique_id=826813743]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 28)
+layout_mode = 2
+tooltip_text = "ComputeSet
+"
+icon = ExtResource("2_x3hw2")
+icon_alignment = 1
+
+[node name="DoubleBufferingSet" type="Button" parent="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/SetButtons" unique_id=2012210045]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 28)
+layout_mode = 2
+tooltip_text = "DoubleBufferingSet"
+icon = ExtResource("3_rjcwb")
+icon_alignment = 1
+
+[node name="UniformButtons" type="FlowContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer" unique_id=432164474]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 36.985)
+layout_mode = 2
+
+[node name="ImageBuffer" type="Button" parent="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/UniformButtons" unique_id=1021563602]
+custom_minimum_size = Vector2(32, 28)
+layout_mode = 2
+tooltip_text = "ImageBuffer
+"
+icon = ExtResource("4_unjfs")
+icon_alignment = 1
+
+[node name="Sampler2D" type="Button" parent="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/UniformButtons" unique_id=1750263400]
+custom_minimum_size = Vector2(32, 28)
+layout_mode = 2
+tooltip_text = "Sampler2D"
+icon = ExtResource("5_h6ckh")
+icon_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/UniformButtons" unique_id=1239606364]
+layout_mode = 2
+
+[node name="UniformBuffer" type="Button" parent="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/UniformButtons" unique_id=497374540]
+custom_minimum_size = Vector2(32, 28)
+layout_mode = 2
+tooltip_text = "UniformBuffer
+"
+icon = ExtResource("6_oiipm")
+icon_alignment = 1
+
+[node name="StorageBuffer" type="Button" parent="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/UniformButtons" unique_id=1351129978]
+custom_minimum_size = Vector2(32, 28)
+layout_mode = 2
+tooltip_text = "StorageBuffer"
+icon = ExtResource("7_aevgr")
+icon_alignment = 1
+
+[node name="VSeparator2" type="VSeparator" parent="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/UniformButtons" unique_id=74154469]
+layout_mode = 2
+
+[node name="AudioBuffer" type="Button" parent="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/UniformButtons" unique_id=1416499375]
+custom_minimum_size = Vector2(32, 28)
+layout_mode = 2
+tooltip_text = "AudioBuffer"
+icon = ExtResource("8_ecl2e")
+icon_alignment = 1
+
+[node name="MultiMeshBuffer" type="Button" parent="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/UniformButtons" unique_id=174817314]
+custom_minimum_size = Vector2(32, 28)
+layout_mode = 2
+tooltip_text = "AudioBuffer"
+icon = ExtResource("10_j846x")
+icon_alignment = 1
+
+[node name="BridgeUniform" type="Button" parent="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/UniformButtons" unique_id=853532225]
+custom_minimum_size = Vector2(32, 28)
+layout_mode = 2
+tooltip_text = "BridgeUniform"
+icon = ExtResource("8_h6ckh")
+icon_alignment = 1
+
+[node name="DoubleBufferingButtons" type="FlowContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer" unique_id=1503676850]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 36.985)
+layout_mode = 2
+
+[node name="ImageBuffer" type="Button" parent="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/DoubleBufferingButtons" unique_id=1588395539]
+custom_minimum_size = Vector2(32, 28)
+layout_mode = 2
+tooltip_text = "ImageBuffer
+"
+icon = ExtResource("4_unjfs")
+icon_alignment = 1
+
+[node name="StorageBuffer" type="Button" parent="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/DoubleBufferingButtons" unique_id=321828507]
+custom_minimum_size = Vector2(32, 28)
+layout_mode = 2
+tooltip_text = "StorageBuffer"
+icon = ExtResource("7_aevgr")
+icon_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="SplitContainer/MarginContainer/BlackBoardEdit" unique_id=142629422]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="BoxContainer" type="BoxContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit" unique_id=1005176358]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+
+[node name="shader_name" type="Button" parent="SplitContainer/MarginContainer/BlackBoardEdit/BoxContainer" unique_id=701129090]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "shader_name"
+clip_text = true
+
+[node name="new_shader" type="Button" parent="SplitContainer/MarginContainer/BlackBoardEdit/BoxContainer" unique_id=192144763]
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+tooltip_text = "Build GLSL Source"
+icon = ExtResource("10_xgkg5")
+flat = true
+icon_alignment = 1
+
+[node name="shader initialization" type="Button" parent="SplitContainer/MarginContainer/BlackBoardEdit/BoxContainer" unique_id=1833062678]
 custom_minimum_size = Vector2(45, 0)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -479,7 +546,7 @@ icon = ExtResource("9_3mnrs")
 flat = true
 icon_alignment = 1
 
-[node name="shader_edit" type="Button" parent="SplitContainer/MarginContainer/BoxContainer/BoxContainer" unique_id=997510812]
+[node name="shader_edit" type="Button" parent="SplitContainer/MarginContainer/BlackBoardEdit/BoxContainer" unique_id=997510812]
 custom_minimum_size = Vector2(45, 0)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -488,31 +555,31 @@ icon = ExtResource("9_aevgr")
 flat = true
 icon_alignment = 1
 
-[node name="BlackBoard" type="FoldableContainer" parent="SplitContainer/MarginContainer/BoxContainer" unique_id=1199918647]
+[node name="BlackBoard" type="FoldableContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit" unique_id=1199918647]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 title = "BlackBoard"
 
-[node name="BoxContainer" type="BoxContainer" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard" unique_id=283788512]
+[node name="BoxContainer" type="BoxContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard" unique_id=283788512]
 layout_mode = 2
 size_flags_vertical = 3
 vertical = true
 
-[node name="BoxContainer3" type="BoxContainer" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer" unique_id=34137951]
+[node name="BoxContainer3" type="BoxContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer" unique_id=34137951]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/BoxContainer3" unique_id=134394477]
+[node name="Label" type="Label" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/BoxContainer3" unique_id=134394477]
 layout_mode = 2
 tooltip_text = "总线程数
 "
 mouse_filter = 1
 text = "Global Size "
 
-[node name="BoxContainer2" type="BoxContainer" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer" unique_id=74781876]
+[node name="BoxContainer2" type="BoxContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer" unique_id=74781876]
 layout_mode = 2
 
-[node name="global_x" type="SpinBox" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/BoxContainer2" unique_id=983991177]
+[node name="global_x" type="SpinBox" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/BoxContainer2" unique_id=983991177]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -520,11 +587,10 @@ size_flags_horizontal = 3
 min_value = 1.0
 max_value = 99999.0
 value = 1920.0
-rounded = true
 allow_greater = true
 prefix = "x "
 
-[node name="global_y" type="SpinBox" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/BoxContainer2" unique_id=828380246]
+[node name="global_y" type="SpinBox" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/BoxContainer2" unique_id=828380246]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -535,8 +601,10 @@ value = 1080.0
 rounded = true
 allow_greater = true
 prefix = "y "
+custom_arrow_step = 1.0
+custom_arrow_round = true
 
-[node name="global_z" type="SpinBox" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/BoxContainer2" unique_id=290517228]
+[node name="global_z" type="SpinBox" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/BoxContainer2" unique_id=290517228]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -548,20 +616,20 @@ rounded = true
 allow_greater = true
 prefix = "z "
 
-[node name="BoxContainer4" type="BoxContainer" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer" unique_id=1051206617]
+[node name="BoxContainer4" type="BoxContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer" unique_id=1051206617]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/BoxContainer4" unique_id=1782811634]
+[node name="Label" type="Label" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/BoxContainer4" unique_id=1782811634]
 layout_mode = 2
 tooltip_text = "工作组线程数 
 工作组线程总数(x*y*z) 最大为 1024"
 mouse_filter = 1
 text = "Local Size "
 
-[node name="BoxContainer5" type="BoxContainer" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer" unique_id=1668776735]
+[node name="BoxContainer5" type="BoxContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer" unique_id=1668776735]
 layout_mode = 2
 
-[node name="local_x" type="SpinBox" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/BoxContainer5" unique_id=861352881]
+[node name="local_x" type="SpinBox" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/BoxContainer5" unique_id=861352881]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -573,7 +641,7 @@ rounded = true
 allow_greater = true
 prefix = "x "
 
-[node name="local_y" type="SpinBox" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/BoxContainer5" unique_id=951237361]
+[node name="local_y" type="SpinBox" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/BoxContainer5" unique_id=951237361]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -585,7 +653,7 @@ rounded = true
 allow_greater = true
 prefix = "y "
 
-[node name="local_z" type="SpinBox" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/BoxContainer5" unique_id=1535170068]
+[node name="local_z" type="SpinBox" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/BoxContainer5" unique_id=1535170068]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -597,23 +665,23 @@ rounded = true
 allow_greater = true
 prefix = "z "
 
-[node name="ScrollContainer" type="ScrollContainer" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer" unique_id=1457618959]
+[node name="ScrollContainer" type="ScrollContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer" unique_id=1457618959]
 custom_minimum_size = Vector2(0, 80.23)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="BoxContainer" type="BoxContainer" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/ScrollContainer" unique_id=1725400187]
+[node name="BoxContainer" type="BoxContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/ScrollContainer" unique_id=1725400187]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 vertical = true
 
-[node name="MacroFoldable" type="FoldableContainer" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/ScrollContainer/BoxContainer" unique_id=1514844795]
+[node name="MacroFoldable" type="FoldableContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/ScrollContainer/BoxContainer" unique_id=1514844795]
 layout_mode = 2
 title = "Macro"
 metadata/_edit_lock_ = true
 
-[node name="MacroEdit" type="CodeEdit" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/ScrollContainer/BoxContainer/MacroFoldable" unique_id=1559284250]
+[node name="MacroEdit" type="CodeEdit" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/ScrollContainer/BoxContainer/MacroFoldable" unique_id=1559284250]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
@@ -622,14 +690,14 @@ text = "#define PI 3.141592653589793
 placeholder_text = "#define "
 scroll_fit_content_height = true
 caret_blink = true
-syntax_highlighter = SubResource("SyntaxHighlighter_y4rru")
+syntax_highlighter = SubResource("SyntaxHighlighter_j846x")
 highlight_all_occurrences = true
 
-[node name="PCFoldable" type="FoldableContainer" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/ScrollContainer/BoxContainer" unique_id=1245839509]
+[node name="PCFoldable" type="FoldableContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/ScrollContainer/BoxContainer" unique_id=1245839509]
 layout_mode = 2
 title = "PushConstant"
 
-[node name="PushConstantEdit" type="CodeEdit" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/ScrollContainer/BoxContainer/PCFoldable" unique_id=209351859]
+[node name="PushConstantEdit" type="CodeEdit" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/ScrollContainer/BoxContainer/PCFoldable" unique_id=209351859]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
@@ -640,66 +708,52 @@ vec2 x = vec2(1.0,1.0)
 vec4 x = vec4(1.0,1.0,1.0,1.0)"
 scroll_fit_content_height = true
 caret_blink = true
-syntax_highlighter = SubResource("SyntaxHighlighter_6q57v")
+syntax_highlighter = SubResource("SyntaxHighlighter_xgkg5")
 code_completion_enabled = true
 auto_brace_completion_enabled = true
 auto_brace_completion_highlight_matching = true
 
-[node name="StructsFoldable" type="FoldableContainer" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/ScrollContainer/BoxContainer" unique_id=1743720401]
+[node name="StructsFoldable" type="FoldableContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/ScrollContainer/BoxContainer" unique_id=1743720401]
 unique_name_in_owner = true
 layout_mode = 2
 title = "Structs"
 script = ExtResource("9_oiipm")
 
-[node name="BoxContainer" type="BoxContainer" parent="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/ScrollContainer/BoxContainer/StructsFoldable" unique_id=638449996]
+[node name="BoxContainer" type="BoxContainer" parent="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/ScrollContainer/BoxContainer/StructsFoldable" unique_id=638449996]
 layout_mode = 2
 vertical = true
-
-[node name="MarginContainer2" type="MarginContainer" parent="SplitContainer" unique_id=807242451]
-visible = false
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 12
-
-[node name="BoxContainer2" type="BoxContainer" parent="SplitContainer/MarginContainer2" unique_id=1066465361]
-layout_mode = 2
-vertical = true
-
-[node name="Label" type="Label" parent="SplitContainer/MarginContainer2/BoxContainer2" unique_id=2040048459]
-layout_mode = 2
-text = "Preview"
-
-[node name="TextEdit" type="TextEdit" parent="SplitContainer/MarginContainer2/BoxContainer2" unique_id=260271805]
-layout_mode = 2
-size_flags_vertical = 3
 
 [node name="WorringLabel" type="Label" parent="." unique_id=451383658]
 unique_name_in_owner = true
 visible = false
+material = SubResource("ShaderMaterial_xgkg5")
 layout_mode = 2
 size_flags_vertical = 0
 
-[connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/FlowContainer/ComputeSet" to="." method="_on_compute_set_pressed"]
-[connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/FlowContainer/DoubleBufferingSet" to="." method="_on_double_buffering_set_pressed"]
-[connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/FlowContainer/ImageBuffer" to="." method="_on_image_buffer_pressed"]
-[connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/FlowContainer/Sampler2D" to="." method="_on_sampler_2d_pressed"]
-[connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/FlowContainer/UniformBuffer" to="." method="_on_uniform_buffer_pressed"]
-[connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/FlowContainer/StorageBuffer" to="." method="_on_storage_buffer_pressed"]
-[connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/FlowContainer/AudioBuffer" to="." method="_on_audio_buffer_pressed"]
-[connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/FlowContainer/BridgeUniform" to="." method="_on_bridge_uniform_pressed"]
-[connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/BoxContainer/shader_name" to="." method="_on_shader_name_pressed"]
-[connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/BoxContainer/new_shader" to="." method="_on_new_shader_pressed"]
-[connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/BoxContainer/shader initialization" to="." method="_on_shader_initialization_pressed"]
-[connection signal="pressed" from="SplitContainer/MarginContainer/BoxContainer/BoxContainer/shader_edit" to="." method="_on_shader_edit_pressed"]
-[connection signal="value_changed" from="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/BoxContainer2/global_x" to="." method="_on_global_x_value_changed"]
-[connection signal="value_changed" from="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/BoxContainer2/global_y" to="." method="_on_global_y_value_changed"]
-[connection signal="value_changed" from="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/BoxContainer2/global_z" to="." method="_on_global_z_value_changed"]
-[connection signal="value_changed" from="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/BoxContainer5/local_x" to="." method="_on_local_x_value_changed"]
-[connection signal="value_changed" from="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/BoxContainer5/local_y" to="." method="_on_local_y_value_changed"]
-[connection signal="value_changed" from="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/BoxContainer5/local_z" to="." method="_on_local_z_value_changed"]
-[connection signal="gui_input" from="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/ScrollContainer/BoxContainer/MacroFoldable/MacroEdit" to="." method="_on_edit_gui_input" flags=18]
-[connection signal="text_changed" from="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/ScrollContainer/BoxContainer/MacroFoldable/MacroEdit" to="." method="_on_macro_edit_text_changed"]
-[connection signal="gui_input" from="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/ScrollContainer/BoxContainer/PCFoldable/PushConstantEdit" to="." method="_on_edit_gui_input" flags=18]
-[connection signal="text_changed" from="SplitContainer/MarginContainer/BoxContainer/BlackBoard/BoxContainer/ScrollContainer/BoxContainer/PCFoldable/PushConstantEdit" to="." method="_on_push_constant_edit_text_changed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/NewBlackBoard/BoxContainer2/BlackBoardName" to="." method="_on_black_board_name_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/NewBlackBoard/BoxContainer2/NewBlackBoard" to="." method="_on_new_black_board_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/SetButtons/ComputeSet" to="." method="_on_compute_set_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/SetButtons/DoubleBufferingSet" to="." method="_on_double_buffering_set_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/UniformButtons/ImageBuffer" to="." method="_on_image_buffer_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/UniformButtons/Sampler2D" to="." method="_on_sampler_2d_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/UniformButtons/UniformBuffer" to="." method="_on_uniform_buffer_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/UniformButtons/StorageBuffer" to="." method="_on_storage_buffer_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/UniformButtons/AudioBuffer" to="." method="_on_audio_buffer_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/UniformButtons/MultiMeshBuffer" to="." method="_on_multi_mesh_buffer_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/UniformButtons/BridgeUniform" to="." method="_on_bridge_uniform_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/DoubleBufferingButtons/ImageBuffer" to="." method="_on_image_buffer_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/BlackBoardEdit/ButtonContainer/DoubleBufferingButtons/StorageBuffer" to="." method="_on_storage_buffer_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/BlackBoardEdit/BoxContainer/shader_name" to="." method="_on_shader_name_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/BlackBoardEdit/BoxContainer/new_shader" to="." method="_on_new_shader_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/BlackBoardEdit/BoxContainer/shader initialization" to="." method="_on_shader_initialization_pressed"]
+[connection signal="pressed" from="SplitContainer/MarginContainer/BlackBoardEdit/BoxContainer/shader_edit" to="." method="_on_shader_edit_pressed"]
+[connection signal="value_changed" from="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/BoxContainer2/global_x" to="." method="_on_global_x_value_changed"]
+[connection signal="value_changed" from="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/BoxContainer2/global_y" to="." method="_on_global_y_value_changed"]
+[connection signal="value_changed" from="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/BoxContainer2/global_z" to="." method="_on_global_z_value_changed"]
+[connection signal="value_changed" from="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/BoxContainer5/local_x" to="." method="_on_local_x_value_changed"]
+[connection signal="value_changed" from="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/BoxContainer5/local_y" to="." method="_on_local_y_value_changed"]
+[connection signal="value_changed" from="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/BoxContainer5/local_z" to="." method="_on_local_z_value_changed"]
+[connection signal="gui_input" from="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/ScrollContainer/BoxContainer/MacroFoldable/MacroEdit" to="." method="_on_edit_gui_input" flags=18]
+[connection signal="text_changed" from="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/ScrollContainer/BoxContainer/MacroFoldable/MacroEdit" to="." method="_on_macro_edit_text_changed"]
+[connection signal="gui_input" from="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/ScrollContainer/BoxContainer/PCFoldable/PushConstantEdit" to="." method="_on_edit_gui_input" flags=18]
+[connection signal="text_changed" from="SplitContainer/MarginContainer/BlackBoardEdit/BlackBoard/BoxContainer/ScrollContainer/BoxContainer/PCFoldable/PushConstantEdit" to="." method="_on_push_constant_edit_text_changed"]

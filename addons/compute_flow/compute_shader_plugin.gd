@@ -21,6 +21,7 @@ var sidebar_enabled := true :
 ## 工具栏按钮
 var _toolbar_button_2d: Button
 var _toolbar_button_3d: Button
+
 func _enter_tree():
 	# 创建侧边栏
 	_sidebar = _sidebar_scene.instantiate()
@@ -81,8 +82,10 @@ func _on_toolbar_button_3d_toggled(toggled_on: bool) -> void:
 		
 ## 更新侧边栏可见性
 func _update_sidebar_visibility() -> void:
+	
 	if !sidebar_enabled:
 		_hide_sidebar()
+		
 	elif _current_selected_node and _is_supported_node_type(_current_selected_node):
 		_show_sidebar_for_node(_current_selected_node)
 	else:

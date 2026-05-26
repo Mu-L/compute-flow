@@ -50,7 +50,6 @@ var data_size := 0
 # ==================== 公共接口 ==================== ##
 ## 更新单个字段的值
 func set_value(key: String, value: Variant) -> void:
-	
 	if data_size == 0:
 		# 从字典构建字节索引
 		var template = ComputeFlowTool.generate_field_index(data,data_list,0)
@@ -82,15 +81,14 @@ func set_value(key: String, value: Variant) -> void:
 		if expected_type != actual_type:
 			push_error("PushConstant: 字段 '%s' 类型错误" % key)
 			return
-			
+
 ## 批量更新多个字段
 func set_values(updates: Dictionary = {}) -> void:
-	if updates=={}:
+	if updates == {}:
 		for key in data_list:
 			set_value(key, data[key])
 	for key in updates:
-		if key in data:
-			set_value(key, updates[key])
+		set_value(key, updates[key])
 
 ## 获取序列化的字节数据
 func get_byte_array() -> PackedByteArray:

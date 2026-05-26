@@ -14,10 +14,15 @@ config/name="ComputeFlow"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="uid://v2fnd7dcxvhy"
 
+[audio]
+
+buses/default_bus_layout=""
+
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
+window/size/always_on_top=true
 window/size/transparent=true
 
 [dotnet]
@@ -35,3 +40,6 @@ enabled=PackedStringArray("res://addons/compute_flow/plugin.cfg")
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+anti_aliasing/quality/msaa_3d=1
+anti_aliasing/screen_space_roughness_limiter/limit=0.18000000000000002
+anti_aliasing/quality/use_taa=true

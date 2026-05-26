@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://caoxj2as6gtxb"]
 
-[ext_resource type="Texture2D" uid="uid://cxdl0usvwx0c7" path="res://addons/compute_shader/ui/icon/remove.svg" id="1_8yyqg"]
-[ext_resource type="Script" uid="uid://djngsxtqcdsux" path="res://addons/compute_shader/ui/editor/stuck_edit.gd" id="1_xo4oa"]
-[ext_resource type="Script" uid="uid://ct1brxlnr7ry" path="res://addons/compute_shader/ui/editor/glsl_highlighter.gd" id="3_2dl8t"]
+[ext_resource type="Texture2D" uid="uid://cxdl0usvwx0c7" path="res://addons/compute_flow/ui/icon/remove.svg" id="1_8yyqg"]
+[ext_resource type="Script" uid="uid://djngsxtqcdsux" path="res://addons/compute_flow/ui/editor/stuck_edit.gd" id="1_xo4oa"]
+[ext_resource type="Script" uid="uid://ct1brxlnr7ry" path="res://addons/compute_flow/ui/editor/glsl_highlighter.gd" id="3_2dl8t"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nyo4a"]
 content_margin_left = 10.0
@@ -344,6 +344,7 @@ emoji_menu_enabled = false
 caret_blink = true
 
 [node name="auto_alignment" type="CheckButton" parent="StructsName" unique_id=1868904458]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 1.0
 offset_top = 41.0
@@ -368,10 +369,10 @@ icon_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-text = "resolution: 1920, 1080
-inv_resolution: 0.00052,0.000926
-delta_time: 0.016666
-scale: 1.0"
+text = "vec2 resolution = vec2(1920, 1080)
+vec2 inv_resolution = vec2(0.00052,0.000926)
+float delta_time= 0.016666
+float scale= 1.0"
 placeholder_text = "Structs"
 emoji_menu_enabled = false
 scroll_fit_content_height = true

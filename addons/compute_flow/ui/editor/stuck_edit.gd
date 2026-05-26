@@ -2,13 +2,13 @@
 extends BoxContainer
 class_name StructEditor
 
-
 var struct:Struct
 var black_board:ComputeFlowBlackBoard
 
 @onready var structs_name: LineEdit = %StructsName
 @onready var delete_button: Button = %DeleteButton
 @onready var stuck_edit: TextEdit = %StuckEdit
+@onready var auto_alignment_button: CheckButton = %auto_alignment
 
 const GLSL_EDITOR = preload("uid://c5wupgq8n1kt")
 
@@ -27,6 +27,7 @@ func _on_delete_mode(delete_mode:bool):
 	else :
 		delete_button.hide()
 
+## 删除struct
 func _on_delete_button_pressed() -> void:
 	if black_board.structs.has(struct):
 		print("remove struct")
@@ -46,6 +47,7 @@ func updata_struct(_struct:Struct):
 	struct = _struct
 	structs_name.text = struct.struct_name
 	stuck_edit.text = struct.fields
+	auto_alignment_button.button_pressed = struct.auto_alignment
 
 func _on_stuck_edit_text_changed() -> void:
 	struct.fields = stuck_edit.text
@@ -53,6 +55,6 @@ func _on_stuck_edit_text_changed() -> void:
 func _on_structs_name_text_changed(new_text: String) -> void:
 	struct.struct_name = structs_name.text
 
-## 自动排序
+## 是否开启自动排序
 func _on_auto_alignment_toggled(toggled_on: bool) -> void:
 	struct.auto_alignment = toggled_on

@@ -13,4 +13,6 @@ static var view := RDTextureView.new()
 var rid:RID
 var shader_rid:RID
 
-@export var black_board :ComputeFlowBlackBoard
+## 分隔符
+const SEPARATOR = &"//** COMPUTE SHADER SEPARATOR - 分隔符 **//\n"
+const DEPENDENCIES_SLOT = &"/* #DEPENDENCIES_SLOT */"

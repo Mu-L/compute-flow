@@ -10,3 +10,4 @@
 
 # Jetbrain IDE specific ignores
 .idea/
+addons/code_flow/

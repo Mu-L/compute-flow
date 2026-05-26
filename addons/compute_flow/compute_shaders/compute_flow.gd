@@ -12,12 +12,21 @@ class_name ComputeFlow
 ## ！！！！[br]
 ## 着色器默认整数使用uint型
 
+## 黑板数据
+@export var black_board :ComputeFlowBlackBoard:
+	set(v):
+		if v!= black_board:
+			black_board = v
+			update_configuration_warnings()
+
 ## 设置uniform
 @export var restart := false:
 	set(value):
-		if Engine.is_editor_hint():
-			return
 		restart = value
+		if Engine.is_editor_hint():
+			await get_tree().create_timer(1).timeout
+			restart = false
+			return
 		if restart:
 			print("重启计算着色器: ",name)
 			_restart()
@@ -36,6 +45,7 @@ class_name ComputeFlow
 			stop = v
 			update_configuration_warnings()
 
+
 ## 工作组
 var work_group : Vector3i
 ## 管线
@@ -46,7 +56,6 @@ var sets:=[]
 var is_ready:=false
 ## 是否存在重名uniform
 var has_dup_uniforms:=false 
-
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
@@ -93,7 +102,7 @@ func run() -> void:
 	if black_board.push_constant:
 		var aligned_data := black_board.push_constant.get_byte_array()
 		if debug:
-			print("push_constant: ",black_board.push_constant.type_index, black_board.push_constant.get_parsed_data())
+			print("push_constant:\n %s\n" %[black_board.push_constant.get_parsed_data()])
 		rd.compute_list_set_push_constant(compute_list, aligned_data, aligned_data.size())
 
 	rd.compute_list_dispatch(compute_list, work_group.x, work_group.y, work_group.z)
@@ -110,7 +119,8 @@ func run() -> void:
 func set_push_constant(name: String, value: Variant) -> void:
 	if black_board.push_constant:
 		black_board.push_constant.set_value(name,value)
-## <公有方法>更新push_constant(按字典更新,可以不是全部参数,性能和push_constant没有太大差别)
+
+## <公有方法>更新push_constant(按字典更新,可以不是全部参数,性能和 set_push_constant 没有差别)
 func set_push_constants(values: Dictionary) -> void:
 	if black_board.push_constant:
 		black_board.push_constant.set_values(values)
@@ -156,12 +166,12 @@ func _get_shader_from_inc() -> RID:
 
 func _restart():
 	_get_shader_from_inc()
+	
 	update_binding()
 	if black_board.push_constant:
 		black_board.push_constant.set_values()
 	run()
-	await get_tree().create_timer(1).timeout
-	restart = false
+	black_board.compute_restart.emit()
 
 # <==============================编辑器工具==============================>
 ## 打开外部编辑器，编辑glsl文件
@@ -236,10 +246,9 @@ func build_glsl_source() -> void:
 		if read_file:
 			file_content = read_file.get_as_text()
 			read_file.close()
-	# 定义分隔符
-	var separator = "//** COMPUTE SHADER SEPARATOR - 分隔符 **//\n"
+	
 	# 查找分隔符位置
-	var separator_index = file_content.find(separator)
+	var separator_index = file_content.find(SEPARATOR)
 
 	if separator_index != -1:
 		# 找到分隔符，保留分隔符之后的内容
@@ -261,13 +270,16 @@ func build_glsl_source() -> void:
 			if end_brace_index > brace_index:
 				after_main_body = file_content.substr(brace_index + 1, end_brace_index - brace_index - 1)
 
-			file_content = generated_code + "\n" + separator  + "\n" + after_main_decl
+			file_content = generated_code + "\n" + SEPARATOR  + "\n" + after_main_decl
 			file_content += after_main_body
 			file_content += "}"
 		else:
 			# 组合 GLSL 代码
-			file_content = glsl_code + "\n" + separator  + "\n" +  "//** 使用compute_shader插件时 不要修改或者删除分隔符 也不要修改分隔符上方的内容 **//\n\n"
-			
+			file_content = (glsl_code + "\n"
+				+ DEPENDENCIES_SLOT + "\n" 
+				+ SEPARATOR  + "\n" 
+				+  "//** 使用compute_shader插件时 不要修改或者删除分隔符 也不要修改分隔符上方的内容 **//\n\n"
+				)
 			# 添加main函数
 			file_content += "void main() {\n"
 			file_content += "	// 在这里添加计算着色器代码\n"
@@ -335,8 +347,12 @@ func _get_configuration_warnings() -> PackedStringArray:
 	# 检查子节点类型
 	for child in get_children():
 		if not child is ComputeSet:
-			warnings.append("计算着色器子节点必须为Compute_Set")
+			warnings.append("计算着色器子节点必须为ComputeSet")
 			break
+
+	if !black_board :
+		warnings.append("未添加和保存黑板数据")
+		return warnings
 	if black_board.local_size.x* black_board.local_size.y* black_board.local_size.z> 1024:
 		warnings.append("工作组最大线程数超出范围限制")
 	if has_dup_uniforms:
